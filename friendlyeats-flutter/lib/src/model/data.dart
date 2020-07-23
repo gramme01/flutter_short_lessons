@@ -21,23 +21,37 @@ import './review.dart';
 // This is the file that Codelab users will primarily work on.
 
 Future<void> addRestaurant(Restaurant restaurant) {
-  // TODO: Complete the "Add restaurants to Firestore" step.
-  return Future.value();
+  final restaurants = Firestore.instance.collection('restaurants');
+  return restaurants.add({
+    'avgRating': restaurant.avgRating,
+    'category': restaurant.category,
+    'city': restaurant.city,
+    'name': restaurant.name,
+    'numRatings': restaurant.numRatings,
+    'photo': restaurant.photo,
+    'price': restaurant.price,
+  });
 }
 
 Stream<QuerySnapshot> loadAllRestaurants() {
-  // TODO: Complete the "Display data from Cloud Firestore" step.
-  return Stream<QuerySnapshot>.value(null);
+  return Firestore.instance
+      .collection('restaurants')
+      .orderBy('avgRating', descending: true)
+      .limit(50)
+      .snapshots();
 }
 
 List<Restaurant> getRestaurantsFromQuery(QuerySnapshot snapshot) {
-  // TODO: Complete the "Display data from Cloud Firestore" step.
-  return [];
+  return snapshot.documents.map((DocumentSnapshot doc) {
+    return Restaurant.fromSnapshot(doc);
+  }).toList();
 }
 
 Future<Restaurant> getRestaurant(String restaurantId) {
-  // TODO: Complete the "Get data" step.
-  return Future.value(null);
+  return Firestore.instance
+      .collection('restaurants')
+      .document(restaurantId)
+      .get().then((DocumentSnapshot doc) => Restaurant.fromSnapshot(doc));
 }
 
 Future<void> addReview({String restaurantId, Review review}) {
