@@ -52,7 +52,7 @@ class _ReviewCreateDialogState extends State<ReviewCreateDialog> {
                 color: color,
                 borderColor: Colors.grey,
                 size: 32,
-                onRatingChanged: (value) {
+                onRated: (value) {
                   if (mounted) {
                     setState(() {
                       rating = value;
