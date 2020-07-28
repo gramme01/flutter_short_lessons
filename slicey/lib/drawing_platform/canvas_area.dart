@@ -29,6 +29,7 @@ class _CanvasAreaState extends State<CanvasArea> {
     List<Widget> widgetsOnStack = [];
     widgetsOnStack.add(_getBackground());
     widgetsOnStack.add(_getSlice());
+    widgetsOnStack.addAll(_getFruitParts());
     widgetsOnStack.addAll(_getFruits());
     widgetsOnStack.add(_getGestureDetector());
 
@@ -86,15 +87,23 @@ class _CanvasAreaState extends State<CanvasArea> {
         Positioned(
           top: fruit.position.dy,
           left: fruit.position.dx,
-          child: Container(
-            width: fruit.width,
-            height: fruit.height,
-            color: Colors.white,
-          ),
+          child: _getMelon(fruit),
         ),
       );
     }
     return list;
+  }
+
+  List<Widget> _getFruitParts() {
+    return [Container()];
+  }
+
+  Widget _getMelon(Fruit fruit) {
+    return Image.asset(
+      'assets/slicey-03.png',
+      height: 80,
+      fit: BoxFit.fitHeight,
+    );
   }
 
   void _addPointsToSlice(ScaleUpdateDetails details) {
@@ -104,13 +113,35 @@ class _CanvasAreaState extends State<CanvasArea> {
 
   void _checkCollision() {
     if (touchSlice == null) return;
+    // for (Fruit fruit in List.from(fruits)) {
+    //   for (Offset point in touchSlice.pointsList) {
+    //     if (!fruit.isPointInside(point)) {
+    //       continue;
+    //     }
+    //     fruits.remove(fruit);
+    //     break;
+    //   }
+    // }
+
     for (Fruit fruit in List.from(fruits)) {
+      bool isFirstPointOutside = false;
+      bool isSecondPointInside = false;
+
       for (Offset point in touchSlice.pointsList) {
-        if (!fruit.isPointInside(point)) {
+        if (!isFirstPointOutside && !fruit.isPointInside(point)) {
+          isFirstPointOutside = true;
           continue;
         }
-        fruits.remove(fruit);
-        break;
+
+        if (isFirstPointOutside && fruit.isPointInside(point)) {
+          isSecondPointInside = true;
+          continue;
+        }
+
+        if (isSecondPointInside && !fruit.isPointInside(point)) {
+          fruits.remove(fruit);
+          break;
+        }
       }
     }
   }
