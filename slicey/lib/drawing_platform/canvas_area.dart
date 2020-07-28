@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../slice_painter.dart';
 import 'models/fruit.dart';
+import 'models/fruit_part.dart';
 import 'models/touch_slice.dart';
 
 class CanvasArea extends StatefulWidget {
@@ -12,16 +13,19 @@ class CanvasArea extends StatefulWidget {
 class _CanvasAreaState extends State<CanvasArea> {
   TouchSlice touchSlice = TouchSlice();
   List<Fruit> fruits = [];
+  List<FruitPart> fruitParts = [];
 
   @override
   void initState() {
     fruits.add(
       Fruit(
-        position: Offset(100, 100),
+        position: Offset(0, 100),
         width: 80,
         height: 80,
+        additionalForce: Offset(5, -10),
       ),
     );
+    _tick();
     super.initState();
   }
 
@@ -95,12 +99,32 @@ class _CanvasAreaState extends State<CanvasArea> {
   }
 
   List<Widget> _getFruitParts() {
-    return [Container()];
+    //TODO Refactor
+    List<Widget> list = [];
+
+    for (FruitPart fruitPart in fruitParts) {
+      list.add(
+        Positioned(
+          top: fruitPart.position.dy,
+          left: fruitPart.position.dx,
+          child: _getMelonPart(fruitPart),
+        ),
+      );
+    }
+    return list;
   }
 
   Widget _getMelon(Fruit fruit) {
     return Image.asset(
       'assets/slicey-03.png',
+      height: 80,
+      fit: BoxFit.fitHeight,
+    );
+  }
+
+  Widget _getMelonPart(FruitPart fruitPart) {
+    return Image.asset(
+      fruitPart.isLeft ? 'assets/slicey-02.png' : 'assets/slicey-04.png',
       height: 80,
       fit: BoxFit.fitHeight,
     );
@@ -113,15 +137,6 @@ class _CanvasAreaState extends State<CanvasArea> {
 
   void _checkCollision() {
     if (touchSlice == null) return;
-    // for (Fruit fruit in List.from(fruits)) {
-    //   for (Offset point in touchSlice.pointsList) {
-    //     if (!fruit.isPointInside(point)) {
-    //       continue;
-    //     }
-    //     fruits.remove(fruit);
-    //     break;
-    //   }
-    // }
 
     for (Fruit fruit in List.from(fruits)) {
       bool isFirstPointOutside = false;
@@ -140,6 +155,7 @@ class _CanvasAreaState extends State<CanvasArea> {
 
         if (isSecondPointInside && !fruit.isPointInside(point)) {
           fruits.remove(fruit);
+          _turnFruitIntoParts(fruit);
           break;
         }
       }
@@ -151,5 +167,53 @@ class _CanvasAreaState extends State<CanvasArea> {
     return Stack(
       children: _getStack(),
     );
+  }
+
+  void _turnFruitIntoParts(Fruit wholeFruit) {
+    FruitPart leftFruitPart = FruitPart(
+      position: Offset(
+        wholeFruit.position.dx - wholeFruit.width * 0.075,
+        wholeFruit.position.dy,
+      ),
+      width: wholeFruit.width,
+      height: wholeFruit.height,
+      isLeft: true,
+      additionalForce: Offset(
+        wholeFruit.additionalForce.dx - 1,
+        wholeFruit.additionalForce.dy - 5,
+      ),
+    );
+
+    FruitPart rightFruitPart = FruitPart(
+      position: Offset(
+        wholeFruit.position.dx + wholeFruit.width * 0.625,
+        wholeFruit.position.dy,
+      ),
+      width: wholeFruit.width,
+      height: wholeFruit.height,
+      isLeft: false,
+      additionalForce: Offset(
+        wholeFruit.additionalForce.dx - 1,
+        wholeFruit.additionalForce.dy - 5,
+      ),
+    );
+
+    setState(() {
+      fruitParts.add(leftFruitPart);
+      fruitParts.add(rightFruitPart);
+    });
+  }
+
+  void _tick() {
+    setState(() {
+      for (Fruit fruit in fruits) {
+        fruit.applyGravity();
+      }
+      for (FruitPart fruitPart in fruitParts) {
+        fruitPart.applyGravity();
+      }
+
+      Future.delayed(Duration(milliseconds: 30), _tick);
+    });
   }
 }
