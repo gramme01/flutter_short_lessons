@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'canvas_area.dart';
+import 'drawing_platform/canvas_area.dart';
 
 class InitialScreen extends StatefulWidget {
   @override

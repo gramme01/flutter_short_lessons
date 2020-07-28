@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class SlicePainter extends CustomPainter {
+  List<Offset> pointsList;
   SlicePainter({this.pointsList});
 
-  List<Offset> pointsList;
   final Paint paintObject = Paint();
 
   @override
