@@ -119,6 +119,9 @@ class _CanvasAreaState extends State<CanvasArea> {
       for (FruitPart fruitPart in fruitParts) {
         fruitPart.applyGravity();
       }
+      if (Random().nextDouble() > 0.97) {
+        _spawnRandomFruit();
+      }
     });
     Future.delayed(Duration(milliseconds: 30), _tick);
   }
