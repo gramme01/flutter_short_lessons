@@ -14,10 +14,12 @@ class Fruit extends GravitationalObject {
     @required this.height,
     gravitySpeed = 0.0,
     additionalForce = const Offset(0, 0),
+    rotation = 0.0,
   }) : super(
           position: position,
           gravitySpeed: gravitySpeed,
           additionalForce: additionalForce,
+          rotation: rotation,
         );
 
   bool isPointInside(Offset point) {

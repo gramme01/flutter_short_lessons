@@ -1,6 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
-import '../slice_painter.dart';
+import 'slice_painter.dart';
 import 'models/fruit.dart';
 import 'models/fruit_part.dart';
 import 'models/touch_slice.dart';
@@ -17,16 +19,24 @@ class _CanvasAreaState extends State<CanvasArea> {
 
   @override
   void initState() {
+    _spawnRandomFruit();
+    _tick();
+    super.initState();
+  }
+
+  void _spawnRandomFruit() {
     fruits.add(
       Fruit(
         position: Offset(0, 100),
         width: 80,
         height: 80,
-        additionalForce: Offset(5, -10),
+        additionalForce: Offset(
+          5 + Random().nextDouble() * 5,
+          Random().nextDouble() * -10,
+        ),
+        rotation: Random().nextDouble() / 3 - 0.16,
       ),
     );
-    _tick();
-    super.initState();
   }
 
   List<Widget> _getStack() {
@@ -91,11 +101,26 @@ class _CanvasAreaState extends State<CanvasArea> {
         Positioned(
           top: fruit.position.dy,
           left: fruit.position.dx,
-          child: _getMelon(fruit),
+          child: Transform.rotate(
+            angle: fruit.rotation * pi * 2,
+            child: _getMelon(fruit),
+          ),
         ),
       );
     }
     return list;
+  }
+
+  void _tick() {
+    setState(() {
+      for (Fruit fruit in fruits) {
+        fruit.applyGravity();
+      }
+      for (FruitPart fruitPart in fruitParts) {
+        fruitPart.applyGravity();
+      }
+    });
+    Future.delayed(Duration(milliseconds: 30), _tick);
   }
 
   List<Widget> _getFruitParts() {
@@ -123,10 +148,13 @@ class _CanvasAreaState extends State<CanvasArea> {
   }
 
   Widget _getMelonPart(FruitPart fruitPart) {
-    return Image.asset(
-      fruitPart.isLeft ? 'assets/slicey-02.png' : 'assets/slicey-04.png',
-      height: 80,
-      fit: BoxFit.fitHeight,
+    return Transform.rotate(
+      angle: fruitPart.rotation * pi * 2,
+      child: Image.asset(
+        fruitPart.isLeft ? 'assets/slicey-02.png' : 'assets/slicey-04.png',
+        height: 80,
+        fit: BoxFit.fitHeight,
+      ),
     );
   }
 
@@ -182,6 +210,7 @@ class _CanvasAreaState extends State<CanvasArea> {
         wholeFruit.additionalForce.dx - 1,
         wholeFruit.additionalForce.dy - 5,
       ),
+      rotation: wholeFruit.rotation,
     );
 
     FruitPart rightFruitPart = FruitPart(
@@ -196,24 +225,12 @@ class _CanvasAreaState extends State<CanvasArea> {
         wholeFruit.additionalForce.dx - 1,
         wholeFruit.additionalForce.dy - 5,
       ),
+      rotation: wholeFruit.rotation,
     );
 
     setState(() {
       fruitParts.add(leftFruitPart);
       fruitParts.add(rightFruitPart);
-    });
-  }
-
-  void _tick() {
-    setState(() {
-      for (Fruit fruit in fruits) {
-        fruit.applyGravity();
-      }
-      for (FruitPart fruitPart in fruitParts) {
-        fruitPart.applyGravity();
-      }
-
-      Future.delayed(Duration(milliseconds: 30), _tick);
     });
   }
 }
