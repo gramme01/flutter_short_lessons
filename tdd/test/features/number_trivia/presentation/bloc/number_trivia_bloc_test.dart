@@ -58,11 +58,11 @@ void main() {
       //arrange
       when(mockInputConverter.stringToUnsignedInteger(any))
           .thenReturn(Left(InvalidInputFailure()));
-      //assert
-      final expected = [Empty(), Error(message: INVALID_INPUT_FAILURE_MESSAGE)];
-      expectLater(bloc.state, emitsInOrder(expected));
       //act
       bloc.add(GetTriviaForConcreteNumber(tNumberString));
+      //assert
+      final expected = [Error(message: INVALID_INPUT_FAILURE_MESSAGE)];
+      expectLater(bloc, emitsInOrder(expected));
     });
   });
 
