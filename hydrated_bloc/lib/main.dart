@@ -96,13 +96,15 @@ class CityInputField extends StatefulWidget {
 
 class _CityInputFieldState extends State<CityInputField> {
   WeatherBloc weatherBloc;
+  final TextEditingController controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 50),
       child: TextField(
-        onSubmitted: submitCityName,
+        controller: controller,
+        onSubmitted: (_) => submitCityName(controller),
         textInputAction: TextInputAction.search,
         decoration: InputDecoration(
           hintText: "Enter a city",
@@ -113,8 +115,9 @@ class _CityInputFieldState extends State<CityInputField> {
     );
   }
 
-  void submitCityName(String cityName) {
+  void submitCityName(TextEditingController cityName) {
     weatherBloc = BlocProvider.of<WeatherBloc>(context);
-    weatherBloc.add(GetWeather(cityName));
+    weatherBloc.add(GetWeather(cityName.text));
+    controller.clear();
   }
 }
