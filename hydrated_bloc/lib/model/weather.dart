@@ -1,10 +1,9 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
-part 'weather.g.dart';
-
-@JsonSerializable()
 class Weather extends Equatable {
   final String cityName;
   final double temperature;
@@ -17,6 +16,19 @@ class Weather extends Equatable {
   @override
   List<Object> get props => [cityName, temperature];
 
-  factory Weather.fromJson(Map<String, dynamic> json) => _$WeatherFromJson(json);
-  Map<String, dynamic> toJson() => _$WeatherToJson(this);
+  Map<String, dynamic> toMap() {
+    return {
+      'cityName': cityName,
+      'temperature': temperature,
+    };
+  }
+
+  factory Weather.fromMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+
+    return Weather(
+      cityName: map['cityName'] as String,
+      temperature: (map['temperature'] as num)?.toDouble(),
+    );
+  }
 }
