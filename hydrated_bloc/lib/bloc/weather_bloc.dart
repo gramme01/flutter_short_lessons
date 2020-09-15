@@ -1,16 +1,31 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 import '../model/weather.dart';
 
 part 'weather_event.dart';
 part 'weather_state.dart';
 
-class WeatherBloc extends Bloc<WeatherEvent, WeatherState> {
+class WeatherBloc extends HydratedBloc<WeatherEvent, WeatherState> {
   WeatherBloc() : super(WeatherInitial());
+
+  @override
+  WeatherState fromJson(Map<String, dynamic> json) {
+    final weather = Weather.fromJson(json);
+    return WeatherLoaded(weather);
+  }
+
+  @override
+  Map<String, dynamic> toJson(WeatherState state) {
+    if (state is WeatherLoaded) {
+      return state.weather.toJson();
+    } else {
+      return null;
+    }
+  }
 
   @override
   Stream<WeatherState> mapEventToState(

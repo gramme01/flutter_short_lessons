@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 import 'bloc/weather_bloc.dart';
 import 'model/weather.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  HydratedBloc.storage = await HydratedStorage.build();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -91,7 +96,7 @@ class CityInputField extends StatefulWidget {
 
 class _CityInputFieldState extends State<CityInputField> {
   WeatherBloc weatherBloc;
-  
+
   @override
   Widget build(BuildContext context) {
     return Padding(
