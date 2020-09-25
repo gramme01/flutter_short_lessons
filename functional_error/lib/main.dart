@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:functional_error/post_change_notifier.dart';
+import 'package:provider/provider.dart';
 
 import 'post_service.dart';
 
@@ -9,20 +11,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Material App',
-      home: Home(),
+      home: ChangeNotifierProvider(
+        create: (_) => PostChangeNotifier(),
+        child: Home(),
+      ),
     );
   }
 }
 
-class Home extends StatefulWidget {
-  @override
-  _HomeState createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  final postService = PostService();
-  Future<Post> postFuture;
-
+class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,28 +30,26 @@ class _HomeState extends State<Home> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            FutureBuilder<Post>(
-              future: postFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  final error = snapshot.error;
-                  return StyledText(error.toString());
-                } else if (snapshot.hasData) {
-                  final post = snapshot.data;
-                  return StyledText(post.toString());
-                } else {
+            Consumer<PostChangeNotifier>(
+              builder: (_, notifier, __) {
+                if (notifier.state == NotifierState.initial) {
                   return StyledText('Press the button 👇');
+                } else if (notifier.state == NotifierState.loading) {
+                  return CircularProgressIndicator();
+                } else {
+                  if (notifier.failure != null) {
+                    return StyledText(notifier.failure.message);
+                  } else {
+                    return StyledText(notifier.post.toString());
+                  }
                 }
               },
             ),
             RaisedButton(
               child: Text('Get Post'),
               onPressed: () async {
-                setState(() {
-                  postFuture = postService.getOnePost();
-                });
+                Provider.of<PostChangeNotifier>(context, listen: false)
+                    .getOnePost();
               },
             ),
           ],

@@ -17,14 +17,12 @@ class PostChangeNotifier extends ChangeNotifier {
   Post get post => _post;
   void _setPost(Post post) {
     _post = post;
-    notifyListeners();
   }
 
   Failure _failure;
   Failure get failure => _failure;
   void _setFailure(Failure failure) {
     _failure = failure;
-    notifyListeners();
   }
 
   void getOnePost() async {
@@ -32,6 +30,7 @@ class PostChangeNotifier extends ChangeNotifier {
     try {
       final post = await _postService.getOnePost();
       _setPost(post);
+      _setFailure(null);
     } on Failure catch (failure) {
       _setFailure(failure);
     }
