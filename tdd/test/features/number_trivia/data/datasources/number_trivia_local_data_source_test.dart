@@ -10,6 +10,8 @@ import 'package:tdd/features/number_trivia/data/models/number_trivia_model.dart'
 
 import '../../../../fixtures/fixture_reader.dart';
 
+class MockSharedPreferences extends Mock implements SharedPreferences {}
+
 void main() {
   NumberTriviaLocalDataSourceImpl dataSource;
   MockSharedPreferences mockSharedPreferences;
@@ -63,4 +65,4 @@ void main() {
   });
 }
 
-class MockSharedPreferences extends Mock implements SharedPreferences {}
+
