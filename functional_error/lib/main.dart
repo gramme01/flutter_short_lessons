@@ -37,11 +37,9 @@ class Home extends StatelessWidget {
                 } else if (notifier.state == NotifierState.loading) {
                   return CircularProgressIndicator();
                 } else {
-                  if (notifier.failure != null) {
-                    return StyledText(notifier.failure.message);
-                  } else {
-                    return StyledText(notifier.post.toString());
-                  }
+                  return notifier.post.fold(
+                      (failure) => StyledText(failure.toString()),
+                      (post) => StyledText(post.toString()));
                 }
               },
             ),
