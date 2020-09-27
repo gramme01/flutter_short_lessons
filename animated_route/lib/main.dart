@@ -1,3 +1,4 @@
+import 'package:animated_route/bouncy_page_route.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -35,7 +36,7 @@ class FirstScreen extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => SecondScreen()),
+              BouncyPageRoute(widget: SecondScreen()),
             );
           },
         ),
