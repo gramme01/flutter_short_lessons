@@ -61,5 +61,3 @@ class SecondScreen extends StatelessWidget {
     );
   }
 }
-
-// TODO: Work harder
