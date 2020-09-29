@@ -10,7 +10,6 @@ class BouncyPageRoute extends PageRouteBuilder {
             animation = CurvedAnimation(
               parent: animation,
               curve: Curves.elasticInOut,
-              
             );
             return ScaleTransition(
               alignment: Alignment.center,
@@ -23,3 +22,5 @@ class BouncyPageRoute extends PageRouteBuilder {
           },
         );
 }
+
+// TODO: Work harder
