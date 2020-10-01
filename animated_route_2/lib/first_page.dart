@@ -8,11 +8,14 @@ class FirstPage extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => SecondPage(),
-            ),
-          );
+          Navigator.of(context).push(PageRouteBuilder(
+            transitionDuration: const Duration(seconds: 1),
+            pageBuilder: (context, animation, secondaryAnimation) {
+              return SecondPage(
+                transitionAnimation: animation,
+              );
+            },
+          ));
         },
         child: Icon(Icons.keyboard_arrow_right),
       ),
