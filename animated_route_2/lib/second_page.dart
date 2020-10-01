@@ -19,7 +19,12 @@ class SecondPage extends StatelessWidget {
               builder: (context, child) {
                 return SlideTransition(
                   position: Tween<Offset>(begin: Offset(1, 0), end: Offset.zero)
-                      .animate(transitionAnimation),
+                      .animate(
+                    CurvedAnimation(
+                      curve: Interval(0, 0.5, curve: Curves.easeOutCubic),
+                      parent: transitionAnimation,
+                    ),
+                  ),
                   child: child,
                 );
               },
@@ -35,7 +40,12 @@ class SecondPage extends StatelessWidget {
                 return SlideTransition(
                   position:
                       Tween<Offset>(begin: Offset(-1, 0), end: Offset.zero)
-                          .animate(transitionAnimation),
+                          .animate(
+                    CurvedAnimation(
+                      curve: Interval(0.5, 1.0, curve: Curves.easeOutCubic),
+                      parent: transitionAnimation,
+                    ),
+                  ),
                   child: child,
                 );
               },

@@ -9,7 +9,7 @@ class FirstPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(PageRouteBuilder(
-            transitionDuration: const Duration(seconds: 1),
+            transitionDuration: const Duration(milliseconds: 300),
             pageBuilder: (context, animation, secondaryAnimation) {
               return SecondPage(
                 transitionAnimation: animation,
