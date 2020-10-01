@@ -17,10 +17,11 @@ class SecondPage extends StatelessWidget {
           ),
           Expanded(
             child: SlidingContainer(
-                initialOffsetX: -1.0,
-                intervalStart: 0.5,
-                intervalEnd: 1.0,
-                color: Colors.green),
+              initialOffsetX: -1.0,
+              intervalStart: 0.5,
+              intervalEnd: 1.0,
+              color: Colors.green,
+            ),
           ),
         ],
       ),
