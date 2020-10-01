@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'second_page.dart';
 
@@ -9,11 +10,13 @@ class FirstPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(PageRouteBuilder(
-            transitionDuration: const Duration(milliseconds: 300),
+            transitionDuration: const Duration(milliseconds: 1000),
             pageBuilder: (context, animation, secondaryAnimation) {
-              return SecondPage(
-                transitionAnimation: animation,
+              return ListenableProvider(
+                create: (context) => animation,
+                child: SecondPage(),
               );
+              // return SecondPage();
             },
           ));
         },
