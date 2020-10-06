@@ -43,6 +43,16 @@ class _BooksAppState extends State<BooksApp> {
               onTapped: _handleBookTapped,
             ),
           ),
+          if (show404)
+            MaterialPage(
+              key: ValueKey('UnknownPage'),
+              child: UnknownScreen(),
+            )
+          else if (_selectedBook != null)
+            MaterialPage(
+              key: ValueKey(_selectedBook),
+              child: BookDetailsScreen(_selectedBook),
+            ),
         ],
         onPopPage: (route, result) => route.didPop(result),
       ),
@@ -54,6 +64,15 @@ class _BooksAppState extends State<BooksApp> {
       _selectedBook = book;
     });
   }
+}
+
+class BookDetailsScreen extends Page {
+  final Book book;
+
+  BookDetailsScreen(this.book) : super(key: ValueKey(book));
+
+  @override
+  Route createRoute(BuildContext context) {}
 }
 
 class BookListScreen extends StatelessWidget {
