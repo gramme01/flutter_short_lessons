@@ -51,10 +51,19 @@ class _BooksAppState extends State<BooksApp> {
           else if (_selectedBook != null)
             MaterialPage(
               key: ValueKey(_selectedBook),
-              child: BookDetailsScreen(_selectedBook),
+              child: BookDetailsScreen(book: _selectedBook),
             ),
         ],
-        onPopPage: (route, result) => route.didPop(result),
+        onPopPage: (route, result) {
+          if (!route.didPop(result)) {
+            return false;
+          }
+
+          setState(() {
+            _selectedBook = null;
+          });
+          return true;
+        },
       ),
     );
   }
@@ -66,13 +75,31 @@ class _BooksAppState extends State<BooksApp> {
   }
 }
 
-class BookDetailsScreen extends Page {
+class BookDetailsPage extends Page {
   final Book book;
 
-  BookDetailsScreen(this.book) : super(key: ValueKey(book));
+  BookDetailsPage({this.book}) : super(key: ValueKey(book));
 
   @override
-  Route createRoute(BuildContext context) {}
+  Route createRoute(BuildContext context) {
+    return PageRouteBuilder(
+      settings: this,
+      pageBuilder: (context, animation, animation2) {
+        final tween = Tween(
+          begin: Offset(0.0, 1.0),
+          end: Offset.zero,
+        );
+        final curveTween = CurveTween(curve: Curves.easeInOut);
+        return SlideTransition(
+          position: animation.drive(curveTween).drive(tween),
+          child: BookDetailsScreen(
+            key: ValueKey(book),
+            book: book,
+          ),
+        );
+      },
+    );
+  }
 }
 
 class BookListScreen extends StatelessWidget {
@@ -97,6 +124,50 @@ class BookListScreen extends StatelessWidget {
               onTap: () => onTapped(book),
             )
         ],
+      ),
+    );
+  }
+}
+
+class BookDetailsScreen extends StatelessWidget {
+  final Book book;
+  const BookDetailsScreen({Key key, this.book}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (book != null) ...[
+              Text(book.title, style: Theme.of(context).textTheme.headline6),
+              Text(book.author, style: Theme.of(context).textTheme.subtitle1),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class UnknownScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Unknown", style: Theme.of(context).textTheme.headline6),
+            Text("This page was not found",
+                style: Theme.of(context).textTheme.subtitle1),
+          ],
+        ),
       ),
     );
   }
